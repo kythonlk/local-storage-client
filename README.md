@@ -1,4 +1,10 @@
-# LocalStorageTable Examples
+# LocalStorageTable
+
+## How to install
+
+```bash
+npm i localstorageclient
+```
 
 ## Overview
 

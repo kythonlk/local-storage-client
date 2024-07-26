@@ -1,6 +1,6 @@
 type Query<T> = Partial<Record<keyof T, T[keyof T]>>;
 
-class LocalStorageClient<T extends { id?: number }> {
+class LocalStorageTable<T extends { id?: number }> {
   private tableName: string;
 
   constructor(tableName: string) {
@@ -65,6 +65,75 @@ class LocalStorageClient<T extends { id?: number }> {
   public clear(): void {
     this._setTable([]);
   }
+
+  public async fetchData(apiUrl: string, timeInterval: number, dataTableName: string, headers: HeadersInit = {}): Promise<void> {
+    const fetchAndStoreData = async () => {
+      try {
+        const response = await fetch(apiUrl, { headers });
+        const data = await response.json();
+        const client = new LocalStorageTable(dataTableName);
+        client._setTable(data);
+      } catch (error) {
+        console.error('Error fetching data from API:', error);
+      }
+    };
+
+    await fetchAndStoreData(); setInterval(fetchAndStoreData, timeInterval);
+  }
+
+  public async post(apiUrl: string, data: T, headers: HeadersInit = {}): Promise<void> {
+    try {
+      await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers,
+        },
+        body: JSON.stringify(data),
+      });
+    } catch (error) {
+      console.error('Error posting data to API:', error);
+    }
+  }
+
+  public async updateData(apiUrl: string, data: T, headers: HeadersInit = {}): Promise<void> {
+    try {
+      await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers,
+        },
+        body: JSON.stringify(data),
+      });
+    } catch (error) {
+      console.error('Error updating data in API:', error);
+    }
+  }
+
+  public async deleteData(apiUrl: string, id: number, headers: HeadersInit = {}): Promise<void> {
+    try {
+      await fetch(`${apiUrl}/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers,
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting data from API:', error);
+    }
+  }
+
+  public async get(apiUrl: string, headers: HeadersInit = {}): Promise<T[]> {
+    try {
+      const response = await fetch(apiUrl, { headers });
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
+      return [];
+    }
+  }
 }
 
-export default LocalStorageClient;
+export default LocalStorageTable;

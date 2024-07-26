@@ -1,207 +1,98 @@
-# LocalStorageClient
+# LocalStorageTable Examples
 
-`LocalStorageClient` is a simple, TypeScript-based wrapper for `localStorage` that allows you to easily manage CRUD operations on a named table. It supports type safety, error handling, pagination, and more.
+## Overview
 
-## Installation
+`LocalStorageTable` is a TypeScript class for managing local storage tables with CRUD operations and synchronization with remote APIs. This document provides examples of how to use each method and option.
 
-Install the package via npm:
+## 1. Basic Operations
 
-```bash
-npm install local-storage-client
-```
+### Initial Setup
 
-## Usage
-
-### Importing and Initializing
-
-First, import and create an instance of `LocalStorageClient`:
+Create an instance of `LocalStorageTable`:
 
 ```typescript
-import LocalStorageClient from 'local-storage-client';
-
-interface Item {
-  name: string;
-  value: number;
-}
-
-const client = new LocalStorageClient<Item>('myTableName');
+const tableName = 'myTable';
+const storageTable = new LocalStorageTable<MyDataType>(tableName);
 ```
 
-### Insert
+Replace `MyDataType` with your specific data type.
 
-Insert a new item into the table:
+### Insert Data
 
 ```typescript
-const newItem = client.insert({ name: 'item1', value: 100 });
-console.log(newItem); // { id: 1625198544123, name: 'item1', value: 100 }
+const newItem = { name: 'John Doe', age: 30 };
+const insertedItem = storageTable.insert(newItem);
+console.log('Inserted Item:', insertedItem);
 ```
 
-### Select
-
-Select items from the table with optional query and pagination:
+### Select Data
 
 ```typescript
-const items = client.select({ name: 'item1' }, 1, 10);
-console.log(items); // Array of items matching the query
+const query = { name: 'John Doe' };
+const selectedItems = storageTable.select(query);
+console.log('Selected Items:', selectedItems);
 ```
 
-### Update
-
-Update items in the table that match the query:
+### Update Data
 
 ```typescript
-const updatedItems = client.update({ name: 'item1' }, { value: 200 });
-console.log(updatedItems); // Array of updated items
+const query = { name: 'John Doe' };
+const updates = { age: 31 };
+const updatedItems = storageTable.update(query, updates);
+console.log('Updated Items:', updatedItems);
 ```
 
-### Delete
-
-Delete items from the table that match the query:
+### Delete Data
 
 ```typescript
-const deletedCount = client.delete({ name: 'item1' });
-console.log(deletedCount); // Number of items deleted
+const query = { name: 'John Doe' };
+const deletedCount = storageTable.delete(query);
+console.log('Number of Deleted Items:', deletedCount);
 ```
 
-### Clear
-
-Clear all items from the table:
+### Clear Data
 
 ```typescript
-client.clear();
+storageTable.clear();
+console.log('Table Cleared');
 ```
 
-## How `id` Works
+## 2. Synchronization with API
 
-When you insert a new item into the table, `LocalStorageClient` automatically assigns a unique `id` to the item if it doesn't already have one. This `id` is generated using the current timestamp (`Date.now()`). This ensures that each item has a unique identifier, which can be useful for subsequent operations like update or delete.
+### Fetch Data from API
 
-For example:
+Fetch data from an API and store it in a local storage table periodically:
 
 ```typescript
-const newItem = client.insert({ name: 'item1', value: 100 });
-console.log(newItem); // { id: 1625198544123, name: 'item1', value: 100 }
+const apiUrl = 'https://api.example.com/data';
+const timeInterval = 3600000; // 1 hour
+const dataTableName = 'fetchedData';
+const headers = { 'Authorization': 'Bearer token' };
+
+storageTable.fetchData(apiUrl, timeInterval, dataTableName, headers)
+  .then(() => console.log('Data fetch and sync started'))
+  .catch(error => console.error('Error fetching data:', error));
 ```
 
-Here, the `id` is `1625198544123`, which is the timestamp when the item was inserted.
+### Synchronize Data with API using POST
 
-## Type Safety
-
-`LocalStorageClient` supports type safety for the items stored in the table. Define an interface for your item type and use it when creating an instance of `LocalStorageClient`.
+Synchronize local storage table data with a remote API using POST requests periodically:
 
 ```typescript
-interface Item {
-  id?: number;
-  name: string;
-  value: number;
-}
+const postApiUrl = 'https://api.example.com/data';
+const postTableName = 'localTable';
+const postInterval = 3600000; // 1 hour
+const postHeaders = { 'Authorization': 'Bearer token' };
 
-const client = new LocalStorageClient<Item>('myTableName');
+storageTable.syncPost(postApiUrl, postTableName, postInterval, postHeaders)
+  .then(() => console.log('POST synchronization started'))
+  .catch(error => console.error('Error synchronizing data with POST:', error));
 ```
 
-## Error Handling
+## Notes
 
-The library includes basic error handling for reading from and writing to `localStorage`. Errors are logged to the console.
+- Ensure the API URLs and headers match your specific requirements.
+- Adjust the time intervals as needed for your use case.
+- Handle errors appropriately based on your application's needs.
 
-# LocalStorageClient
-
-`LocalStorageClient` is a simple, TypeScript-based wrapper for `localStorage` that allows you to easily manage CRUD operations on a named table. It supports type safety, error handling, pagination, and more.
-
-## Installation
-
-Install the package via npm:
-
-```bash
-npm install local-storage-client
-```
-
-## Usage
-
-### Importing and Initializing
-
-First, import and create an instance of `LocalStorageClient`:
-
-```typescript
-import LocalStorageClient from 'local-storage-client';
-
-interface Item {
-  name: string;
-  value: number;
-}
-
-const client = new LocalStorageClient<Item>('myTableName');
-```
-
-### Insert
-
-Insert a new item into the table:
-
-```typescript
-const newItem = client.insert({ name: 'item1', value: 100 });
-console.log(newItem); // { id: 1625198544123, name: 'item1', value: 100 }
-```
-
-### Select
-
-Select items from the table with optional query and pagination:
-
-```typescript
-const items = client.select({ name: 'item1' }, 1, 10);
-console.log(items); // Array of items matching the query
-```
-
-### Update
-
-Update items in the table that match the query:
-
-```typescript
-const updatedItems = client.update({ name: 'item1' }, { value: 200 });
-console.log(updatedItems); // Array of updated items
-```
-
-### Delete
-
-Delete items from the table that match the query:
-
-```typescript
-const deletedCount = client.delete({ name: 'item1' });
-console.log(deletedCount); // Number of items deleted
-```
-
-### Clear
-
-Clear all items from the table:
-
-```typescript
-client.clear();
-```
-
-## How `id` Works
-
-When you insert a new item into the table, `LocalStorageClient` automatically assigns a unique `id` to the item if it doesn't already have one. This `id` is generated using the current timestamp (`Date.now()`). This ensures that each item has a unique identifier, which can be useful for subsequent operations like update or delete.
-
-For example:
-
-```typescript
-const newItem = client.insert({ name: 'item1', value: 100 });
-console.log(newItem); // { id: 1625198544123, name: 'item1', value: 100 }
-```
-
-Here, the `id` is `1625198544123`, which is the timestamp when the item was inserted.
-
-## Type Safety
-
-`LocalStorageClient` supports type safety for the items stored in the table. Define an interface for your item type and use it when creating an instance of `LocalStorageClient`.
-
-```typescript
-interface Item {
-  id?: number;
-  name: string;
-  value: number;
-}
-
-const client = new LocalStorageClient<Item>('myTableName');
-```
-
-## Error Handling
-
-The library includes basic error handling for reading from and writing to `localStorage`. Errors are logged to the console.
+Feel free to modify and adapt these examples to fit your specific implementation and use cases.

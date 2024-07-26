@@ -1,0 +1,27 @@
+{
+  "name": "localstorageclient",
+  "version": "0.0.1",
+  "description": "Use Local Storage easily with types",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kythonlk/LocalStorageClient.git"
+  },
+  "keywords": [
+    "nodejs",
+    "js",
+    "localstorage",
+    "react",
+    "vue",
+    "anguler"
+  ],
+  "author": "kythonlk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kythonlk/LocalStorageClient/issues"
+  },
+  "homepage": "https://github.com/kythonlk/LocalStorageClient#readme"
+}

@@ -1,10 +1,10 @@
 {
   "name": "localstorageclient",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Use Local Storage easily with types",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/kythonlk/LocalStorageClient/issues"
   },
-  "homepage": "https://github.com/kythonlk/LocalStorageClient#readme"
+  "homepage": "https://github.com/kythonlk/LocalStorageClient#readme",
+  "devDependencies": {
+    "vitest": "^2.0.4"
+  }
 }
